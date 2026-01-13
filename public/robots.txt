@@ -1,0 +1,37 @@
+# robots.txt for XPOZ.ME
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /private/
+Disallow: /*.json$
+
+# Sitemap location
+Sitemap: https://xpoz.me/sitemap.xml
+
+# Popular Search Engine Bots
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+# Crawl delay for aggressive bots
+User-agent: *
+Crawl-delay: 1
