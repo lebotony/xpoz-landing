@@ -198,8 +198,8 @@ export const Footer = () => {
             <Description>
               The ultimate platform for adult content creators to showcase their
               work and connect directly with fans. Unleash your creativity, grow
-              your audience, and promote your content like never before — with
-              our mobile app coming soon.
+              your audience, and promote your content like never before — coming
+              soon.
             </Description>
             <SocialLinks>
               <SocialLink
