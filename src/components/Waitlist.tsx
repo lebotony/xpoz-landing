@@ -48,6 +48,7 @@ const GlassCard = styled(motion.div)`
 `;
 
 const Title = styled.h2`
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: ${({ theme }) => theme.fontSize.xxxl};
   font-weight: ${({ theme }) => theme.fontWeight.black};
   text-align: center;
@@ -63,6 +64,7 @@ const Title = styled.h2`
 `;
 
 const Subtitle = styled.p`
+  font-family: ${({ theme }) => theme.fonts.primary};
   text-align: center;
   font-size: ${({ theme }) => theme.fontSize.lg};
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -86,6 +88,7 @@ const InputGroup = styled.div`
 `;
 
 const Input = styled.input`
+  font-family: ${({ theme }) => theme.fonts.primary};
   flex: 1;
   padding: ${({ theme }) => theme.spacing.lg};
   background: rgba(255, 255, 255, 0.05);
@@ -108,6 +111,7 @@ const Input = styled.input`
 `;
 
 const SubmitButton = styled(motion.button)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   padding: ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.colors.gradient.primary};
   border: none;
@@ -145,6 +149,7 @@ const SubmitButton = styled(motion.button)`
 `;
 
 const SuccessMessage = styled(motion.div)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   padding: ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.colors.gradient.green};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -155,6 +160,7 @@ const SuccessMessage = styled(motion.div)`
 `;
 
 const ErrorMessage = styled(motion.div)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   padding: ${({ theme }) => theme.spacing.lg};
   background: ${({ theme }) => theme.colors.gradient.red};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
@@ -179,12 +185,14 @@ const Divider = styled.div`
   }
 
   span {
+    font-family: ${({ theme }) => theme.fonts.primary};
     color: ${({ theme }) => theme.colors.textSecondary};
     font-size: ${({ theme }) => theme.fontSize.sm};
   }
 `;
 
 const WhatsAppButton = styled(motion.a)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -207,6 +215,9 @@ const WhatsAppButton = styled(motion.a)`
 
 const WHATSAPP_CHANNEL = 'https://whatsapp.com/channel/0029VavN0vj62WiP3jIhwR3E';
 
+// Update this with your actual tweet URL
+const TWITTER_CONFIRMATION_TWEET = 'https://twitter.com/intent/tweet?text=%F0%9F%9A%80%20XPOZ%20is%20coming%0A%0AComment%20%22Joined%22%20to%20get%20early%20access%0A%0A%F0%9F%94%94%20Email%20waitlist%20is%20open';
+
 export const Waitlist = () => {
   const [email, setEmail] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -221,7 +232,7 @@ export const Waitlist = () => {
     setSuccess(false);
 
     try {
-      await addDoc(collection(db, 'waitlist'), {
+      await addDoc(collection(db, 'xpoz-landing'), {
         email: email || null,
         whatsapp: whatsapp || null,
         timestamp: serverTimestamp(),
@@ -230,7 +241,14 @@ export const Waitlist = () => {
       setSuccess(true);
       setEmail('');
       setWhatsapp('');
-      setTimeout(() => setSuccess(false), 5000);
+
+      // Redirect to Twitter confirmation tweet after 2 seconds
+      setTimeout(() => {
+        window.open(TWITTER_CONFIRMATION_TWEET, '_blank');
+      }, 2000);
+
+      // Hide success message after 8 seconds
+      setTimeout(() => setSuccess(false), 8000);
     } catch (err: any) {
       setError(err.message || 'Failed to join waitlist. Please try again.');
       setTimeout(() => setError(''), 5000);
@@ -275,7 +293,7 @@ export const Waitlist = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <span>{loading ? 'Joining...' : 'Join Waitlist 🚀'}</span>
+              <span>{loading ? 'Joining...' : 'Join Waitlist (comment to confirm) 🚀'}</span>
             </SubmitButton>
           </Form>
 
@@ -284,7 +302,8 @@ export const Waitlist = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
             >
-              🎉 You're on the list! We'll notify you when we launch.
+              🎉 You're on the waitlist!<br />
+              Comment 'Joined' on X to confirm 👇
             </SuccessMessage>
           )}
 

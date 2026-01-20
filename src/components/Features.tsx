@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import styled from 'styled-components';
+import { motion } from "framer-motion";
+import styled from "styled-components";
 
 const FeaturesSection = styled.section`
   padding: ${({ theme }) => theme.spacing.xxxl} 0;
@@ -17,6 +17,7 @@ const Container = styled.div`
 `;
 
 const SectionTitle = styled(motion.h2)`
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: ${({ theme }) => theme.fontSize.xxxl};
   font-weight: ${({ theme }) => theme.fontWeight.black};
   text-align: center;
@@ -32,6 +33,7 @@ const SectionTitle = styled(motion.h2)`
 `;
 
 const SectionSubtitle = styled(motion.p)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   text-align: center;
   font-size: ${({ theme }) => theme.fontSize.lg};
   color: ${({ theme }) => theme.colors.textSecondary};
@@ -59,7 +61,7 @@ const FeatureCard = styled(motion.div)`
   overflow: hidden;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 0;
@@ -95,6 +97,7 @@ const IconWrapper = styled.div`
 `;
 
 const FeatureTitle = styled.h3`
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: ${({ theme }) => theme.fontSize.xl};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   margin-bottom: ${({ theme }) => theme.spacing.md};
@@ -102,6 +105,7 @@ const FeatureTitle = styled.h3`
 `;
 
 const FeatureDescription = styled.p`
+  font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSize.md};
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.6;
@@ -109,35 +113,29 @@ const FeatureDescription = styled.p`
 
 const features = [
   {
-    icon: '🎬',
-    title: 'Post Unlimited Content',
-    description: 'Share photos, videos, and live streams. No limits on what you can create and share with your audience.',
+    icon: "🎬",
+    title: "Post Unlimited Content",
+    description:
+      "Share photos and 5 second videos. No limits on what you can create and share with your audience."
   },
   {
-    icon: '💰',
-    title: 'Monetize Your Content',
-    description: 'Earn money through subscriptions, tips, and exclusive content. Keep more of what you earn with our low fees.',
+    icon: "👥",
+    title: "Build Your Community",
+    description:
+      "Engage with fans through comments and likes. Create lasting connections with your audience."
   },
   {
-    icon: '👥',
-    title: 'Build Your Community',
-    description: 'Engage with fans through comments, likes, and direct messages. Create lasting connections with your audience.',
+    icon: "🔗",
+    title: "Link to All Platforms",
+    description:
+      "Connect your OnlyFans, StripChat, and other platforms. Drive traffic to all your revenue streams."
   },
   {
-    icon: '🔗',
-    title: 'Link to All Platforms',
-    description: 'Connect your OnlyFans, StripChat, and other platforms. Drive traffic to all your revenue streams.',
-  },
-  {
-    icon: '📊',
-    title: 'Advanced Analytics',
-    description: 'Track your performance with detailed insights. See what content resonates and optimize your strategy.',
-  },
-  {
-    icon: '🔒',
-    title: 'Privacy & Security',
-    description: 'Your content is protected with industry-leading security. Control who sees what and when.',
-  },
+    icon: "📊",
+    title: "Advanced Analytics",
+    description:
+      "Track your performance with detailed insights. See what content resonates and optimize your strategy."
+  }
 ];
 
 export const Features = () => {
