@@ -1,5 +1,5 @@
-import { motion } from 'framer-motion';
-import styled from 'styled-components';
+import { motion } from "framer-motion";
+import styled from "styled-components";
 
 const HeroSection = styled.section`
   position: relative;
@@ -18,16 +18,20 @@ const BackgroundBlur = styled.div`
   z-index: 0;
 `;
 
-const Blob = styled(motion.div)<{ $top?: string; $left?: string; $color?: string }>`
+const Blob = styled(motion.div)<{
+  $top?: string;
+  $left?: string;
+  $color?: string;
+}>`
   position: absolute;
   width: 600px;
   height: 600px;
   border-radius: 50%;
   filter: blur(120px);
   opacity: 0.3;
-  top: ${({ $top }) => $top || '50%'};
-  left: ${({ $left }) => $left || '50%'};
-  background: ${({ $color }) => $color || '#FF4458'};
+  top: ${({ $top }) => $top || "50%"};
+  left: ${({ $left }) => $left || "50%"};
+  background: ${({ $color }) => $color || "#FF4458"};
   transform: translate(-50%, -50%);
 `;
 
@@ -49,11 +53,12 @@ const Content = styled.div`
 
 const Logo = styled(motion.div)`
   font-size: 120px;
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  /* margin-bottom: 8px; */
   filter: drop-shadow(0 0 40px rgba(255, 68, 88, 0.6));
 `;
 
 const Title = styled(motion.h1)`
+  font-family: ${({ theme }) => theme.fonts.heading};
   font-size: ${({ theme }) => theme.fontSize.hero};
   font-weight: ${({ theme }) => theme.fontWeight.black};
   background: ${({ theme }) => theme.colors.gradient.hero};
@@ -70,6 +75,7 @@ const Title = styled(motion.h1)`
 `;
 
 const Subtitle = styled(motion.p)`
+  font-family: ${({ theme }) => theme.fonts.primary};
   font-size: ${({ theme }) => theme.fontSize.xl};
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: ${({ theme }) => theme.spacing.xxl};
@@ -91,7 +97,9 @@ const CTAButtons = styled(motion.div)`
 `;
 
 const PrimaryButton = styled(motion.button)`
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xxxl};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  padding: ${({ theme }) => theme.spacing.lg}
+    ${({ theme }) => theme.spacing.xxxl};
   background: ${({ theme }) => theme.colors.gradient.primary};
   border: none;
   border-radius: ${({ theme }) => theme.borderRadius.full};
@@ -104,7 +112,7 @@ const PrimaryButton = styled(motion.button)`
   box-shadow: ${({ theme }) => theme.shadows.neon};
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     inset: 0;
     background: ${({ theme }) => theme.colors.gradient.secondary};
@@ -123,12 +131,15 @@ const PrimaryButton = styled(motion.button)`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     width: 100%;
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+    padding: ${({ theme }) => theme.spacing.md}
+      ${({ theme }) => theme.spacing.xl};
   }
 `;
 
 const SecondaryButton = styled(motion.button)`
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xxxl};
+  font-family: ${({ theme }) => theme.fonts.primary};
+  padding: ${({ theme }) => theme.spacing.lg}
+    ${({ theme }) => theme.spacing.xxxl};
   background: transparent;
   border: 2px solid ${({ theme }) => theme.colors.primary};
   border-radius: ${({ theme }) => theme.borderRadius.full};
@@ -147,35 +158,9 @@ const SecondaryButton = styled(motion.button)`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     width: 100%;
-    padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
+    padding: ${({ theme }) => theme.spacing.md}
+      ${({ theme }) => theme.spacing.xl};
   }
-`;
-
-const Stats = styled(motion.div)`
-  display: flex;
-  gap: ${({ theme }) => theme.spacing.xxxl};
-  justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing.xxxl};
-  flex-wrap: wrap;
-`;
-
-const StatItem = styled.div`
-  text-align: center;
-`;
-
-const StatValue = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.xxxl};
-  font-weight: ${({ theme }) => theme.fontWeight.black};
-  background: ${({ theme }) => theme.colors.gradient.hero};
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  margin-bottom: ${({ theme }) => theme.spacing.xs};
-`;
-
-const StatLabel = styled.div`
-  font-size: ${({ theme }) => theme.fontSize.md};
-  color: ${({ theme }) => theme.colors.textSecondary};
 `;
 
 interface HeroProps {
@@ -193,7 +178,7 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           animate={{
             x: [0, 50, 0],
             y: [0, 30, 0],
-            scale: [1, 1.1, 1],
+            scale: [1, 1.1, 1]
           }}
           transition={{
             duration: 8,
@@ -208,7 +193,7 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           animate={{
             x: [0, -30, 0],
             y: [0, 50, 0],
-            scale: [1, 1.2, 1],
+            scale: [1, 1.2, 1]
           }}
           transition={{
             duration: 10,
@@ -223,7 +208,7 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           animate={{
             x: [0, 40, 0],
             y: [0, -40, 0],
-            scale: [1, 1.15, 1],
+            scale: [1, 1.15, 1]
           }}
           transition={{
             duration: 9,
@@ -255,9 +240,10 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.8 }}
         >
-          The ultimate platform for adult content creators to showcase their work
-          and connect with fans. Unleash your creativity, build your audience,
-          and monetize your content like never before.
+          The ultimate platform for adult content creators to showcase their
+          work and connect directly with fans. Unleash your creativity, grow
+          your audience, and promote your content like never before — with our
+          mobile app coming soon.
         </Subtitle>
 
         <CTAButtons
@@ -275,30 +261,15 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           <SecondaryButton
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+            onClick={() =>
+              document
+                .getElementById("features")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           >
             Learn More
           </SecondaryButton>
         </CTAButtons>
-
-        <Stats
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.8 }}
-        >
-          <StatItem>
-            <StatValue>10K+</StatValue>
-            <StatLabel>Creators</StatLabel>
-          </StatItem>
-          <StatItem>
-            <StatValue>500K+</StatValue>
-            <StatLabel>Fans</StatLabel>
-          </StatItem>
-          <StatItem>
-            <StatValue>$2M+</StatValue>
-            <StatLabel>Earned</StatLabel>
-          </StatItem>
-        </Stats>
       </Content>
     </HeroSection>
   );

@@ -1,0 +1,18 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // xpoz-landing collection - allow writes only, no reads for public users
+    match /xpoz-landing/{document} {
+      // Allow anyone to create new waitlist entries
+      allow create: if request.resource.data.keys().hasAll(['timestamp'])
+                    && (request.resource.data.email is string || request.resource.data.whatsapp is string)
+                    && request.resource.data.size() <= 3; // Only email, whatsapp, and timestamp fields
+
+      // No public read access - only you can view in Firebase Console
+      allow read: if false;
+
+      // No updates or deletes from public
+      allow update, delete: if false;
+    }
+  }
+}
