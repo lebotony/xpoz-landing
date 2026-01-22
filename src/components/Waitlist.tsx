@@ -82,7 +82,7 @@ const InputGroup = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.md};
 
-  @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
+  @media (max-width: 685px) {
     flex-direction: column;
   }
 `;
@@ -279,7 +279,7 @@ const TELEGRAM_CHANNEL = "https://t.me/+JBmINhBYcUYzMmI0";
 
 export const Waitlist = () => {
   const [email, setEmail] = useState("");
-  const [whatsapp, setWhatsapp] = useState("");
+  const [model, setModel] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -293,13 +293,14 @@ export const Waitlist = () => {
     try {
       await addDoc(collection(db, "xpoz-landing"), {
         email: email || null,
-        whatsapp: whatsapp || null,
+        model: model || null,
+        hornymeterValue: 0, // Will be updated when we connect Hero inputs
         timestamp: serverTimestamp()
       });
 
       setSuccess(true);
       setEmail("");
-      setWhatsapp("");
+      setModel("");
 
       // Redirect to Twitter profile after 1.5 seconds
       setTimeout(() => {
@@ -327,8 +328,8 @@ export const Waitlist = () => {
         >
           <Title>Get Early Access</Title>
           <Subtitle>
-            Join thousands of creators already on the waitlist. Be the first to
-            know when we launch!
+            Join thousands of content creators and fans already on the waitlist.
+            Be the first to know when we launch!
           </Subtitle>
 
           <Form onSubmit={handleSubmit}>
@@ -340,16 +341,16 @@ export const Waitlist = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
               <Input
-                type="tel"
-                placeholder="WhatsApp number (optional)"
-                value={whatsapp}
-                onChange={(e) => setWhatsapp(e.target.value)}
+                type="text"
+                placeholder="Model"
+                value={model}
+                onChange={(e) => setModel(e.target.value)}
               />
             </InputGroup>
 
             <SubmitButton
               type="submit"
-              disabled={loading || (!email && !whatsapp)}
+              disabled={loading || (!email && !model)}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
