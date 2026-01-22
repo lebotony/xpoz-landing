@@ -12,8 +12,6 @@ interface TopModel {
  */
 export const updateTopModelsCache = async (): Promise<void> => {
   try {
-    console.log("Updating top models cache...");
-
     // Fetch all submissions
     const q = query(collection(db, "xpoz-landing"));
     const querySnapshot = await getDocs(q);
@@ -42,10 +40,7 @@ export const updateTopModelsCache = async (): Promise<void> => {
       models: sortedModels,
       lastUpdated: new Date().toISOString()
     });
-
-    console.log("Top models cache updated:", sortedModels);
   } catch (error) {
-    console.error("Error updating top models cache:", error);
     // Don't throw - we don't want to block submissions if cache update fails
   }
 };

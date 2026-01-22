@@ -7,9 +7,6 @@ import { Hornymeter } from "./Hornymeter";
 import { TopModelsChart } from "./TopModelsChart";
 import {
   getHornymeterMessage,
-  getHorninessEmoji,
-  getCommunityUnlockMessage,
-  hasUnlockedCommunity,
 } from "../utils/hornymeterMessages";
 
 const HeroSection = styled.section`
@@ -364,6 +361,10 @@ const PopupContent = styled(motion.div)`
   text-align: center;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   position: relative;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const PopupEmoji = styled.div`
@@ -382,13 +383,13 @@ const PopupEmoji = styled.div`
   }
 `;
 
-const PopupMessage = styled.h2<{ value: number }>`
+const PopupMessage = styled.h2<{ value?: number }>`
   font-family: ${({ theme }) => theme.fonts.heading};
   font-size: ${({ theme }) => theme.fontSize.xxl};
   font-weight: ${({ theme }) => theme.fontWeight.black};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   background: ${({ value }) => {
-    if (value <= 33)
+    if (!value || value <= 33)
       return "linear-gradient(90deg, #00E676 0%, #26FFA3 50%, #66FF99 100%)";
     if (value <= 66)
       return "linear-gradient(90deg, #FFD600 0%, #FFE44D 50%, #FFEB3B 100%)";
@@ -397,6 +398,7 @@ const PopupMessage = styled.h2<{ value: number }>`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  line-height: 1.3;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
     font-size: ${({ theme }) => theme.fontSize.xl};
@@ -408,6 +410,69 @@ const PopupSubtext = styled.p`
   font-size: ${({ theme }) => theme.fontSize.lg};
   color: ${({ theme }) => theme.colors.textSecondary};
   margin-bottom: ${({ theme }) => theme.spacing.xl};
+  line-height: 1.6;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
+`;
+
+const ModalButtonGroup = styled.div`
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.md};
+  width: 100%;
+  margin-top: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: column;
+  }
+`;
+
+const PrimaryModalButton = styled(motion.button)`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: ${({ theme }) => theme.colors.gradient.primary};
+  border: none;
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-weight: ${({ theme }) => theme.fontWeight.bold};
+  cursor: pointer;
+  box-shadow: ${({ theme }) => theme.shadows.glow};
+  transition: all ${({ theme }) => theme.transitions.normal};
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: ${({ theme }) => theme.shadows.neon};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 100%;
+  }
+`;
+
+const SecondaryModalButton = styled(motion.button)`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  flex: 1;
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.lg};
+  background: transparent;
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.lg};
+  color: ${({ theme }) => theme.colors.text};
+  font-size: ${({ theme }) => theme.fontSize.md};
+  font-weight: ${({ theme }) => theme.fontWeight.semibold};
+  cursor: pointer;
+  transition: all ${({ theme }) => theme.transitions.normal};
+
+  &:hover {
+    border-color: ${({ theme }) => theme.colors.primary};
+    background: rgba(255, 68, 88, 0.1);
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 100%;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -437,88 +502,176 @@ interface HeroProps {
   onGetStarted: () => void;
 }
 
-// Removed - now using utility functions from hornymeterMessages
-
 export const Hero = ({ onGetStarted }: HeroProps) => {
   const [hornValue, setHornValue] = useState(0);
-  const [showPopup, setShowPopup] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
   const [email, setEmail] = useState("");
   const [model, setModel] = useState("");
   const [submitting, setSubmitting] = useState(false);
+
+  // NEW: State for confirmation modal and success modal
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [awaitingHornymeterSubmission, setAwaitingHornymeterSubmission] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successHornValue, setSuccessHornValue] = useState(0);
 
   const handleHornymeterChange = (value: number) => {
     setHornValue(value);
   };
 
-  const handleSliderRelease = () => {
-    // Only show popup if value is greater than 0
-    if (hornValue > 0) {
-      // Generate dynamic message
-      const message = getHornymeterMessage(hornValue);
-      setPopupMessage(message);
-      setShowPopup(true);
+  const scrollToWaitlist = () => {
+    setTimeout(() => {
+      document.getElementById("waitlist")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    }, 300);
+  };
 
-      // Scroll to community section (not waitlist)
-      setTimeout(() => {
-        document.getElementById("community")?.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-      }, 300);
+  const scrollToCommunity = () => {
+    setTimeout(() => {
+      document.getElementById("community")?.scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }, 300);
+  };
+
+  const scrollToHornymeter = () => {
+    setTimeout(() => {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+      });
+    }, 300);
+  };
+
+  const submitToFirebase = async (data: { email: string; model: string; hornymeterValue: number }) => {
+    try {
+      await addDoc(collection(db, "xpoz-landing"), {
+        email: data.email,
+        model: data.model,
+        hornymeterValue: data.hornymeterValue,
+        timestamp: serverTimestamp()
+      });
+
+      return true;
+    } catch (error) {
+      alert(
+        `Error submitting: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
+      );
+      return false;
     }
   };
 
-  const handleSubmit = async () => {
-    if (!email || !model) {
-      alert("Please fill in both email and model fields");
-      return;
-    }
+  // FLOW 1: Hornymeter slider interaction
+  const handleSliderRelease = async () => {
+    if (hornValue === 0) return;
 
-    setSubmitting(true);
-    try {
-      console.log("Attempting to submit to Firebase:", {
+    // FLOW 3: Complete submission after modal "Yes"
+    if (awaitingHornymeterSubmission && email && model) {
+      setSubmitting(true);
+      const success = await submitToFirebase({
         email,
         model,
         hornymeterValue: hornValue
       });
 
-      const docRef = await addDoc(collection(db, "xpoz-landing"), {
-        email: email || null,
-        model: model || null,
-        hornymeterValue: hornValue,
-        timestamp: serverTimestamp()
-      });
+      if (success) {
+        // Show success modal with dynamic message
+        const dynamicMessage = getHornymeterMessage(hornValue);
+        setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+        setSuccessHornValue(hornValue); // Save hornValue before resetting
+        setShowSuccessModal(true);
 
-      console.log("Document written with ID: ", docRef.id);
+        // Reset form and flags
+        setEmail("");
+        setModel("");
+        setHornValue(0);
+        setAwaitingHornymeterSubmission(false);
+      }
+      setSubmitting(false);
+    } else {
+      // FLOW 1: Normal slider interaction - redirect to Get Early Access form
+      // Store hornValue in localStorage so Waitlist component can access it
+      localStorage.setItem('hornymeterValue', hornValue.toString());
+      scrollToWaitlist();
+    }
+  };
 
-      // Show success message
-      alert("Successfully submitted! Thank you for joining.");
+  // FLOW 2 & 4: Hero form submit
+  const handleSubmit = async () => {
+    if (!email || !model) {
+      alert("Please fill in both email and favourite model fields");
+      return;
+    }
+
+    // FLOW 2: Hornymeter value is 0 - show confirmation modal
+    if (hornValue === 0) {
+      setShowConfirmationModal(true);
+      return;
+    }
+
+    // FLOW 4: Hornymeter value > 0 - direct submission
+    setSubmitting(true);
+    const success = await submitToFirebase({
+      email,
+      model,
+      hornymeterValue: hornValue
+    });
+
+    if (success) {
+      // Show success modal with dynamic message
+      const dynamicMessage = getHornymeterMessage(hornValue);
+      setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+      setSuccessHornValue(hornValue); // Save hornValue before resetting
+      setShowSuccessModal(true);
 
       // Reset form
       setEmail("");
       setModel("");
       setHornValue(0);
-
-      // Scroll to community section after successful submission
-      setTimeout(() => {
-        document.getElementById("community")?.scrollIntoView({
-          behavior: "smooth",
-          block: "center"
-        });
-      }, 300);
-    } catch (error) {
-      console.error("Error submitting:", error);
-      alert(
-        `Error submitting: ${error instanceof Error ? error.message : "Unknown error"}. Please try again.`
-      );
-    } finally {
-      setSubmitting(false);
     }
+    setSubmitting(false);
   };
 
-  const closePopup = () => {
-    setShowPopup(false);
+  // Modal "Yes" - Add Hornymeter
+  const handleModalYes = () => {
+    setShowConfirmationModal(false);
+    setAwaitingHornymeterSubmission(true);
+    scrollToHornymeter();
+  };
+
+  // Modal "No" - Submit without Hornymeter
+  const handleModalNo = async () => {
+    setShowConfirmationModal(false);
+    setSubmitting(true);
+
+    const success = await submitToFirebase({
+      email,
+      model,
+      hornymeterValue: 0
+    });
+
+    if (success) {
+      setSuccessMessage("Successfully submitted! Join our community to stay connected.");
+      setSuccessHornValue(0); // No hornValue in this case
+      setShowSuccessModal(true);
+
+      // Reset form
+      setEmail("");
+      setModel("");
+    }
+    setSubmitting(false);
+  };
+
+  const closeConfirmationModal = () => {
+    setShowConfirmationModal(false);
+  };
+
+  const closeSuccessModal = () => {
+    setShowSuccessModal(false);
+    scrollToCommunity();
   };
 
   return (
@@ -589,7 +742,7 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
             />
             <StylishInput
               type="text"
-              placeholder="Model"
+              placeholder="favourite model"
               value={model}
               onChange={(e) => setModel(e.target.value)}
             />
@@ -674,29 +827,64 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
         <TopModelsChart />
       </ChartWrapperOutside>
 
-      {showPopup && (
+      {showConfirmationModal && (
         <PopupOverlay
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          onClick={closePopup}
+          onClick={closeConfirmationModal}
         >
           <PopupContent
             initial={{ scale: 0.8, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
+            transition={{ type: "spring", damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <CloseButton onClick={closePopup}>&times;</CloseButton>
-            <PopupEmoji>{getHorninessEmoji(hornValue)}</PopupEmoji>
-            <PopupMessage value={hornValue}>
-              {popupMessage}
-            </PopupMessage>
+            <CloseButton onClick={closeConfirmationModal}>&times;</CloseButton>
+            <PopupEmoji>🤔</PopupEmoji>
+            <PopupMessage>Add Hornymeter Value?</PopupMessage>
             <PopupSubtext>
-              {hasUnlockedCommunity(hornValue)
-                ? getCommunityUnlockMessage(hornValue)
-                : "Keep sliding to unlock the community 😏"}
+              Do you want to submit your details without a Hornymeter value, or would you like to add it using the Hornymeter slider?
             </PopupSubtext>
+            <ModalButtonGroup>
+              <PrimaryModalButton
+                onClick={handleModalYes}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Yes, add Hornymeter
+              </PrimaryModalButton>
+              <SecondaryModalButton
+                onClick={handleModalNo}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                No, submit without it
+              </SecondaryModalButton>
+            </ModalButtonGroup>
+          </PopupContent>
+        </PopupOverlay>
+      )}
+
+      {showSuccessModal && (
+        <PopupOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeSuccessModal}
+        >
+          <PopupContent
+            initial={{ scale: 0.8, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 50 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CloseButton onClick={closeSuccessModal}>&times;</CloseButton>
+            <PopupEmoji>✅</PopupEmoji>
+            <PopupMessage value={successHornValue}>Success!</PopupMessage>
+            <PopupSubtext>{successMessage}</PopupSubtext>
           </PopupContent>
         </PopupOverlay>
       )}

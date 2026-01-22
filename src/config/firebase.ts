@@ -27,11 +27,11 @@ if (typeof window !== 'undefined') {
       try {
         analytics = getAnalytics(app);
       } catch (error) {
-        console.warn('Firebase Analytics could not be initialized:', error);
+        // Firebase Analytics could not be initialized
       }
     }
   }).catch((error) => {
-    console.warn('Analytics support check failed:', error);
+    // Analytics support check failed
   });
 }
 

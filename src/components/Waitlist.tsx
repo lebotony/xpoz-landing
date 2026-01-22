@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import styled from "styled-components";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../config/firebase";
+import { getHornymeterMessage } from "../utils/hornymeterMessages";
 
 const WaitlistSection = styled.section`
   padding: ${({ theme }) => theme.spacing.xxxl} 0;
@@ -148,17 +149,6 @@ const SubmitButton = styled(motion.button)`
   }
 `;
 
-const SuccessMessage = styled(motion.div)`
-  font-family: ${({ theme }) => theme.fonts.primary};
-  padding: ${({ theme }) => theme.spacing.lg};
-  background: ${({ theme }) => theme.colors.gradient.green};
-  border-radius: ${({ theme }) => theme.borderRadius.lg};
-  text-align: center;
-  font-size: ${({ theme }) => theme.fontSize.md};
-  font-weight: ${({ theme }) => theme.fontWeight.semibold};
-  margin-top: ${({ theme }) => theme.spacing.lg};
-`;
-
 const ErrorMessage = styled(motion.div)`
   font-family: ${({ theme }) => theme.fonts.primary};
   padding: ${({ theme }) => theme.spacing.lg};
@@ -254,6 +244,115 @@ const IconWrapper = styled.span`
   }
 `;
 
+const PopupOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: ${({ theme }) => theme.spacing.xl};
+`;
+
+const PopupContent = styled(motion.div)`
+  background: linear-gradient(
+    135deg,
+    rgba(37, 37, 51, 0.98) 0%,
+    rgba(26, 26, 36, 0.98) 100%
+  );
+  backdrop-filter: blur(20px);
+  border: 2px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.borderRadius.xxl};
+  padding: ${({ theme }) => theme.spacing.xxxl};
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  position: relative;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg};
+  }
+`;
+
+const PopupEmoji = styled.div`
+  font-size: 64px;
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  animation: bounce 1s ease-in-out;
+
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+`;
+
+const PopupMessage = styled.h2<{ value?: number }>`
+  font-family: ${({ theme }) => theme.fonts.heading};
+  font-size: ${({ theme }) => theme.fontSize.xxl};
+  font-weight: ${({ theme }) => theme.fontWeight.black};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
+  background: ${({ value }) => {
+    if (!value || value <= 33)
+      return "linear-gradient(90deg, #00E676 0%, #26FFA3 50%, #66FF99 100%)";
+    if (value <= 66)
+      return "linear-gradient(90deg, #FFD600 0%, #FFE44D 50%, #FFEB3B 100%)";
+    return "linear-gradient(90deg, #FF4458 0%, #FF5266 50%, #FF6B7A 100%)";
+  }};
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.3;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.xl};
+  }
+`;
+
+const PopupSubtext = styled.p`
+  font-family: ${({ theme }) => theme.fonts.primary};
+  font-size: ${({ theme }) => theme.fontSize.lg};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  margin-bottom: ${({ theme }) => theme.spacing.xl};
+  line-height: 1.6;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: ${({ theme }) => theme.spacing.md};
+  right: ${({ theme }) => theme.spacing.md};
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 24px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all ${({ theme }) => theme.transitions.normal};
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: ${({ theme }) => theme.colors.text};
+  }
+`;
+
 const TwitterIcon = () => (
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -281,40 +380,55 @@ export const Waitlist = () => {
   const [email, setEmail] = useState("");
   const [model, setModel] = useState("");
   const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [successHornValue, setSuccessHornValue] = useState(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    setSuccess(false);
+
+    // Get hornymeterValue from localStorage (set by Hero component)
+    const storedHornValue = localStorage.getItem('hornymeterValue');
+    const hornymeterValue = storedHornValue ? parseInt(storedHornValue, 10) : 0;
 
     try {
       await addDoc(collection(db, "xpoz-landing"), {
         email: email || null,
         model: model || null,
-        hornymeterValue: 0, // Will be updated when we connect Hero inputs
+        hornymeterValue: hornymeterValue,
         timestamp: serverTimestamp()
       });
 
-      setSuccess(true);
+      // Generate success message based on hornymeter value
+      if (hornymeterValue > 0) {
+        const dynamicMessage = getHornymeterMessage(hornymeterValue);
+        setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+        setSuccessHornValue(hornymeterValue);
+      } else {
+        setSuccessMessage("You've successfully joined the waitlist! We'll notify you as soon as we launch. Stay tuned!");
+        setSuccessHornValue(0);
+      }
+
+      // Show success modal
+      setShowSuccessModal(true);
       setEmail("");
       setModel("");
 
-      // Redirect to Twitter profile after 1.5 seconds
-      setTimeout(() => {
-        window.open(TWITTER_PROFILE, "_blank");
-      }, 1500);
-
-      // Hide success message after 5 seconds
-      setTimeout(() => setSuccess(false), 5000);
+      // Clear the stored hornymeter value after successful submission
+      localStorage.removeItem('hornymeterValue');
     } catch (err: any) {
       setError(err.message || "Failed to join waitlist. Please try again.");
       setTimeout(() => setError(""), 5000);
     } finally {
       setLoading(false);
     }
+  };
+
+  const closeSuccessModal = () => {
+    setShowSuccessModal(false);
   };
 
   return (
@@ -342,7 +456,7 @@ export const Waitlist = () => {
               />
               <Input
                 type="text"
-                placeholder="Model"
+                placeholder="favourite model"
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
               />
@@ -357,17 +471,6 @@ export const Waitlist = () => {
               <span>{loading ? "Joining..." : "Join Waitlist 🚀"}</span>
             </SubmitButton>
           </Form>
-
-          {success && (
-            <SuccessMessage
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              🎉 Joined the waitlist successfully!
-              <br />
-              Redirecting you to follow us on Twitter...
-            </SuccessMessage>
-          )}
 
           {error && (
             <ErrorMessage
@@ -424,6 +527,28 @@ export const Waitlist = () => {
           </SocialButtonsContainer>
         </GlassCard>
       </Container>
+
+      {showSuccessModal && (
+        <PopupOverlay
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          onClick={closeSuccessModal}
+        >
+          <PopupContent
+            initial={{ scale: 0.8, opacity: 0, y: 50 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 50 }}
+            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <CloseButton onClick={closeSuccessModal}>&times;</CloseButton>
+            <PopupEmoji>✅</PopupEmoji>
+            <PopupMessage value={successHornValue}>Success!</PopupMessage>
+            <PopupSubtext>{successMessage}</PopupSubtext>
+          </PopupContent>
+        </PopupOverlay>
+      )}
     </WaitlistSection>
   );
 };
