@@ -37,22 +37,4 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0;
     width: 100%;
   }
-
-  /* Custom scrollbar */
-  ::-webkit-scrollbar {
-    width: 12px;
-  }
-
-  ::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.colors.gray[100]};
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.colors.primary};
-    border-radius: 6px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.colors.primaryDark};
-  }
 `;

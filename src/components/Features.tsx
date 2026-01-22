@@ -4,6 +4,10 @@ import styled from "styled-components";
 const FeaturesSection = styled.section`
   padding: ${({ theme }) => theme.spacing.xxxl} 0;
   position: relative;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.lg} 0 ${({ theme }) => theme.spacing.xxxl} 0;
+  }
 `;
 
 const Container = styled.div`
@@ -59,6 +63,8 @@ const FeatureCard = styled(motion.div)`
   transition: all ${({ theme }) => theme.transitions.normal};
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 
   &::before {
     content: "";
@@ -81,6 +87,13 @@ const FeatureCard = styled(motion.div)`
       transform: scaleX(1);
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: row;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const IconWrapper = styled.div`
@@ -94,6 +107,23 @@ const IconWrapper = styled.div`
   font-size: 40px;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
   box-shadow: ${({ theme }) => theme.shadows.glow};
+  flex-shrink: 0;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 70px;
+    height: 70px;
+    font-size: 36px;
+    margin-bottom: 0;
+  }
+`;
+
+const CardContent = styled.div`
+  display: flex;
+  flex-direction: column;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex: 1;
+  }
 `;
 
 const FeatureTitle = styled.h3`
@@ -102,6 +132,11 @@ const FeatureTitle = styled.h3`
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   margin-bottom: ${({ theme }) => theme.spacing.md};
   color: ${({ theme }) => theme.colors.text};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.lg};
+    margin-bottom: ${({ theme }) => theme.spacing.xs};
+  }
 `;
 
 const FeatureDescription = styled.p`
@@ -109,6 +144,11 @@ const FeatureDescription = styled.p`
   font-size: ${({ theme }) => theme.fontSize.md};
   color: ${({ theme }) => theme.colors.text};
   line-height: 1.6;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    line-height: 1.4;
+  }
 `;
 
 const features = [
@@ -171,8 +211,10 @@ export const Features = () => {
               whileHover={{ scale: 1.02 }}
             >
               <IconWrapper>{feature.icon}</IconWrapper>
-              <FeatureTitle>{feature.title}</FeatureTitle>
-              <FeatureDescription>{feature.description}</FeatureDescription>
+              <CardContent>
+                <FeatureTitle>{feature.title}</FeatureTitle>
+                <FeatureDescription>{feature.description}</FeatureDescription>
+              </CardContent>
             </FeatureCard>
           ))}
         </Grid>

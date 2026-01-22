@@ -121,6 +121,13 @@ const LinkCard = styled(motion.a)`
       opacity: 1;
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex-direction: row;
+    align-items: center;
+    gap: ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const IconWrapper = styled.div<{ $bgColor: string }>`
@@ -128,49 +135,82 @@ const IconWrapper = styled.div<{ $bgColor: string }>`
   z-index: 1;
   width: 80px;
   height: 80px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background: ${({ $bgColor }) => $bgColor};
   border-radius: ${({ theme }) => theme.borderRadius.lg};
-  margin-bottom: ${({ theme }) => theme.spacing.lg};
   font-size: 40px;
   box-shadow: ${({ theme }) => theme.shadows.lg};
+  margin-bottom: ${({ theme }) => theme.spacing.lg};
 
   svg {
     width: 48px;
     height: 48px;
     fill: white;
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 0;
+
+    svg {
+      width: 42px;
+      height: 42px;
+    }
+  }
+`;
+
+const CardContent = styled.div`
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.xs};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex: 1;
+  }
 `;
 
 const LinkTitle = styled.h3`
   font-family: ${({ theme }) => theme.fonts.heading};
-  position: relative;
-  z-index: 1;
   font-size: ${({ theme }) => theme.fontSize.xl};
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text};
+  margin: 0;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
   text-align: center;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.lg};
+    text-align: left;
+    margin-bottom: 0;
+  }
 `;
 
 const LinkDescription = styled.p`
   font-family: ${({ theme }) => theme.fonts.primary};
-  position: relative;
-  z-index: 1;
   font-size: ${({ theme }) => theme.fontSize.md};
   color: ${({ theme }) => theme.colors.textSecondary};
   text-align: center;
   line-height: 1.5;
+  margin: 0;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    text-align: left;
+    line-height: 1.4;
+  }
 `;
 
 const MemberCount = styled.div`
   font-family: ${({ theme }) => theme.fonts.primary};
-  position: relative;
-  z-index: 1;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: ${({ theme }) => theme.spacing.xs};
   margin-top: ${({ theme }) => theme.spacing.md};
   padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
@@ -179,6 +219,14 @@ const MemberCount = styled.div`
   font-size: ${({ theme }) => theme.fontSize.sm};
   color: ${({ theme }) => theme.colors.primary};
   font-weight: ${({ theme }) => theme.fontWeight.semibold};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    display: inline-flex;
+    align-self: flex-start;
+    margin-top: ${({ theme }) => theme.spacing.xs};
+    padding: ${({ theme }) => theme.spacing.xs} ${({ theme }) => theme.spacing.sm};
+    font-size: ${({ theme }) => theme.fontSize.xs};
+  }
 `;
 
 const TwitterIcon = () => (
@@ -282,11 +330,13 @@ export const Community = () => {
                 <IconWrapper $bgColor={link.bgColor}>
                   <IconComponent />
                 </IconWrapper>
-                <LinkTitle>{link.platform}</LinkTitle>
-                <LinkDescription>{link.description}</LinkDescription>
-                <MemberCount>
-                  <span>join and explore</span>
-                </MemberCount>
+                <CardContent>
+                  <LinkTitle>{link.platform}</LinkTitle>
+                  <LinkDescription>{link.description}</LinkDescription>
+                  <MemberCount>
+                    <span>join and explore</span>
+                  </MemberCount>
+                </CardContent>
               </LinkCard>
             );
           })}

@@ -5,6 +5,10 @@ const FooterSection = styled.footer`
   padding: ${({ theme }) => theme.spacing.xxxl} 0;
   border-top: 1px solid ${({ theme }) => theme.colors.border};
   background: ${({ theme }) => theme.colors.surface};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.xl} 0;
+  }
 `;
 
 const Container = styled.div`
@@ -27,9 +31,33 @@ const Grid = styled.div`
     grid-template-columns: 1fr;
     gap: ${({ theme }) => theme.spacing.xl};
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    display: flex;
+    flex-direction: column;
+    gap: ${({ theme }) => theme.spacing.lg};
+    margin-bottom: ${({ theme }) => theme.spacing.xl};
+  }
 `;
 
-const Column = styled.div``;
+const NavColumns = styled.div`
+  display: contents;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: ${({ theme }) => theme.spacing.md};
+    width: 100%;
+  }
+`;
+
+const Column = styled.div`
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    flex: 1;
+    min-width: 0;
+  }
+`;
 
 const Logo = styled.div`
   display: flex;
@@ -41,6 +69,10 @@ const Logo = styled.div`
 const LogoIcon = styled.span`
   font-size: 48px;
   filter: drop-shadow(0 0 20px rgba(255, 68, 88, 0.4));
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 36px;
+  }
 `;
 
 const LogoText = styled.h3`
@@ -51,6 +83,10 @@ const LogoText = styled.h3`
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.xl};
+  }
 `;
 
 const Description = styled.p`
@@ -59,6 +95,11 @@ const Description = styled.p`
   font-size: ${({ theme }) => theme.fontSize.md};
   line-height: 1.6;
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.sm};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const SocialLinks = styled.div`
@@ -96,6 +137,16 @@ const SocialLink = styled(motion.a)`
       fill: white;
     }
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    width: 40px;
+    height: 40px;
+
+    svg {
+      width: 20px;
+      height: 20px;
+    }
+  }
 `;
 
 const ColumnTitle = styled.h4`
@@ -104,6 +155,11 @@ const ColumnTitle = styled.h4`
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   color: ${({ theme }) => theme.colors.text};
   margin-bottom: ${({ theme }) => theme.spacing.lg};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
+    margin-bottom: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const LinkList = styled.ul`
@@ -114,6 +170,10 @@ const LinkList = styled.ul`
 
 const LinkItem = styled.li`
   margin-bottom: ${({ theme }) => theme.spacing.md};
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    margin-bottom: ${({ theme }) => theme.spacing.sm};
+  }
 `;
 
 const Link = styled.a`
@@ -125,6 +185,10 @@ const Link = styled.a`
 
   &:hover {
     color: ${({ theme }) => theme.colors.primary};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.sm};
   }
 `;
 
@@ -229,59 +293,61 @@ export const Footer = () => {
             </SocialLinks>
           </Column>
 
-          <Column>
-            <ColumnTitle>Product</ColumnTitle>
-            <LinkList>
-              <LinkItem>
-                <Link href="#features">Features</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="#pricing">Pricing</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="#faq">FAQ</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="#waitlist">Get Started</Link>
-              </LinkItem>
-            </LinkList>
-          </Column>
+          <NavColumns>
+            <Column>
+              <ColumnTitle>Product</ColumnTitle>
+              <LinkList>
+                <LinkItem>
+                  <Link href="#features">Features</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="#pricing">Pricing</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="#faq">FAQ</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="#waitlist">Get Started</Link>
+                </LinkItem>
+              </LinkList>
+            </Column>
 
-          <Column>
-            <ColumnTitle>Company</ColumnTitle>
-            <LinkList>
-              <LinkItem>
-                <Link href="/about">About Us</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/careers">Careers</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/blog">Blog</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/contact">Contact</Link>
-              </LinkItem>
-            </LinkList>
-          </Column>
+            <Column>
+              <ColumnTitle>Company</ColumnTitle>
+              <LinkList>
+                <LinkItem>
+                  <Link href="/about">About Us</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/careers">Careers</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/blog">Blog</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/contact">Contact</Link>
+                </LinkItem>
+              </LinkList>
+            </Column>
 
-          <Column>
-            <ColumnTitle>Support</ColumnTitle>
-            <LinkList>
-              <LinkItem>
-                <Link href="/help">Help Center</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/creator-guide">Creator Guide</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/community">Community</Link>
-              </LinkItem>
-              <LinkItem>
-                <Link href="/safety">Safety</Link>
-              </LinkItem>
-            </LinkList>
-          </Column>
+            <Column>
+              <ColumnTitle>Support</ColumnTitle>
+              <LinkList>
+                <LinkItem>
+                  <Link href="/help">Help Center</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/creator-guide">Creator Guide</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/community">Community</Link>
+                </LinkItem>
+                <LinkItem>
+                  <Link href="/safety">Safety</Link>
+                </LinkItem>
+              </LinkList>
+            </Column>
+          </NavColumns>
         </Grid>
 
         <Bottom>

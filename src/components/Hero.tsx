@@ -5,9 +5,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { Hornymeter } from "./Hornymeter";
 import { TopModelsChart } from "./TopModelsChart";
-import {
-  getHornymeterMessage,
-} from "../utils/hornymeterMessages";
+import { getHornymeterMessage } from "../utils/hornymeterMessages";
 
 const HeroSection = styled.section`
   position: relative;
@@ -209,6 +207,10 @@ const Logo = styled(motion.div)`
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     font-size: 80px;
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 50px;
+  }
 `;
 
 const Title = styled(motion.h1)`
@@ -225,6 +227,10 @@ const Title = styled(motion.h1)`
 
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     font-size: ${({ theme }) => theme.fontSize.xxxl};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: 45px;
   }
 `;
 
@@ -244,6 +250,10 @@ const Subtitle = styled(motion.p)`
   @media (max-width: ${({ theme }) => theme.breakpoints.tablet}) {
     font-size: ${({ theme }) => theme.fontSize.lg};
     width: 90%;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
   }
 
   @media (max-width: 685px) {
@@ -301,6 +311,12 @@ const PrimaryButton = styled(motion.button)`
     padding: ${({ theme }) => theme.spacing.md}
       ${({ theme }) => theme.spacing.xl};
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
+    padding: ${({ theme }) => theme.spacing.sm}
+      ${({ theme }) => theme.spacing.lg};
+  }
 `;
 
 const SecondaryButton = styled(motion.button)`
@@ -328,6 +344,12 @@ const SecondaryButton = styled(motion.button)`
     max-width: 85%;
     padding: ${({ theme }) => theme.spacing.md}
       ${({ theme }) => theme.spacing.xl};
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    font-size: ${({ theme }) => theme.fontSize.md};
+    padding: ${({ theme }) => theme.spacing.sm}
+      ${({ theme }) => theme.spacing.lg};
   }
 `;
 
@@ -363,7 +385,8 @@ const PopupContent = styled(motion.div)`
   position: relative;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.xxl}
+      ${({ theme }) => theme.spacing.lg};
   }
 `;
 
@@ -510,7 +533,8 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
 
   // NEW: State for confirmation modal and success modal
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
-  const [awaitingHornymeterSubmission, setAwaitingHornymeterSubmission] = useState(false);
+  const [awaitingHornymeterSubmission, setAwaitingHornymeterSubmission] =
+    useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [successHornValue, setSuccessHornValue] = useState(0);
@@ -546,7 +570,11 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
     }, 300);
   };
 
-  const submitToFirebase = async (data: { email: string; model: string; hornymeterValue: number }) => {
+  const submitToFirebase = async (data: {
+    email: string;
+    model: string;
+    hornymeterValue: number;
+  }) => {
     try {
       await addDoc(collection(db, "xpoz-landing"), {
         email: data.email,
@@ -580,7 +608,9 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
       if (success) {
         // Show success modal with dynamic message
         const dynamicMessage = getHornymeterMessage(hornValue);
-        setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+        setSuccessMessage(
+          `${dynamicMessage} Join our community while you cool down! 🔥`
+        );
         setSuccessHornValue(hornValue); // Save hornValue before resetting
         setShowSuccessModal(true);
 
@@ -594,7 +624,7 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
     } else {
       // FLOW 1: Normal slider interaction - redirect to Get Early Access form
       // Store hornValue in localStorage so Waitlist component can access it
-      localStorage.setItem('hornymeterValue', hornValue.toString());
+      localStorage.setItem("hornymeterValue", hornValue.toString());
       scrollToWaitlist();
     }
   };
@@ -623,7 +653,9 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
     if (success) {
       // Show success modal with dynamic message
       const dynamicMessage = getHornymeterMessage(hornValue);
-      setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+      setSuccessMessage(
+        `${dynamicMessage} Join our community while you cool down! 🔥`
+      );
       setSuccessHornValue(hornValue); // Save hornValue before resetting
       setShowSuccessModal(true);
 
@@ -654,7 +686,9 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
     });
 
     if (success) {
-      setSuccessMessage("Successfully submitted! Join our community to stay connected.");
+      setSuccessMessage(
+        "Successfully submitted! Join our community to stay connected."
+      );
       setSuccessHornValue(0); // No hornValue in this case
       setShowSuccessModal(true);
 
@@ -736,13 +770,13 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
           <InputWrapper>
             <StylishInput
               type="email"
-              placeholder="Email"
+              placeholder="Your email address..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <StylishInput
               type="text"
-              placeholder="favourite model"
+              placeholder="Enter favourite model..."
               value={model}
               onChange={(e) => setModel(e.target.value)}
             />
@@ -845,7 +879,8 @@ export const Hero = ({ onGetStarted }: HeroProps) => {
             <PopupEmoji>🤔</PopupEmoji>
             <PopupMessage>Add Hornymeter Value?</PopupMessage>
             <PopupSubtext>
-              Do you want to submit your details without a Hornymeter value, or would you like to add it using the Hornymeter slider?
+              Do you want to submit your details without a Hornymeter value, or
+              would you like to add it using the Hornymeter slider?
             </PopupSubtext>
             <ModalButtonGroup>
               <PrimaryModalButton
