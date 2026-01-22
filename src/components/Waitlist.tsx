@@ -109,6 +109,10 @@ const Input = styled.input`
   &::placeholder {
     color: ${({ theme }) => theme.colors.textTertiary};
   }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+  }
 `;
 
 const SubmitButton = styled(motion.button)`
@@ -146,6 +150,11 @@ const SubmitButton = styled(motion.button)`
   span {
     position: relative;
     z-index: 1;
+  }
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+    font-size: ${({ theme }) => theme.fontSize.md};
   }
 `;
 
@@ -201,6 +210,11 @@ const SocialButton = styled(motion.a)`
   font-weight: ${({ theme }) => theme.fontWeight.bold};
   cursor: pointer;
   text-decoration: none;
+
+  @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
+    padding: ${({ theme }) => theme.spacing.md};
+    font-size: ${({ theme }) => theme.fontSize.md};
+  }
 `;
 
 const WhatsAppButton = styled(SocialButton)`
@@ -276,7 +290,8 @@ const PopupContent = styled(motion.div)`
   position: relative;
 
   @media (max-width: ${({ theme }) => theme.breakpoints.mobile}) {
-    padding: ${({ theme }) => theme.spacing.xxl} ${({ theme }) => theme.spacing.lg};
+    padding: ${({ theme }) => theme.spacing.xxl}
+      ${({ theme }) => theme.spacing.lg};
   }
 `;
 
@@ -371,8 +386,7 @@ const WhatsAppIcon = () => (
   </svg>
 );
 
-const WHATSAPP_CHANNEL =
-  "https://whatsapp.com/channel/0029VavN0vj62WiP3jIhwR3E";
+const WHATSAPP_CHANNEL = "https://chat.whatsapp.com/HTw8cbU8ZocI2j8IV0XVcm";
 const TWITTER_PROFILE = "https://x.com/xpoz_me";
 const TELEGRAM_CHANNEL = "https://t.me/+JBmINhBYcUYzMmI0";
 
@@ -391,7 +405,7 @@ export const Waitlist = () => {
     setError("");
 
     // Get hornymeterValue from localStorage (set by Hero component)
-    const storedHornValue = localStorage.getItem('hornymeterValue');
+    const storedHornValue = localStorage.getItem("hornymeterValue");
     const hornymeterValue = storedHornValue ? parseInt(storedHornValue, 10) : 0;
 
     try {
@@ -405,10 +419,14 @@ export const Waitlist = () => {
       // Generate success message based on hornymeter value
       if (hornymeterValue > 0) {
         const dynamicMessage = getHornymeterMessage(hornymeterValue);
-        setSuccessMessage(`${dynamicMessage} Join our community while you cool down! 🔥`);
+        setSuccessMessage(
+          `${dynamicMessage} Join our community while you cool down! 🔥`
+        );
         setSuccessHornValue(hornymeterValue);
       } else {
-        setSuccessMessage("You've successfully joined the waitlist! We'll notify you as soon as we launch. Stay tuned!");
+        setSuccessMessage(
+          "You've successfully joined the waitlist! We'll notify you as soon as we launch. Stay tuned!"
+        );
         setSuccessHornValue(0);
       }
 
@@ -418,7 +436,7 @@ export const Waitlist = () => {
       setModel("");
 
       // Clear the stored hornymeter value after successful submission
-      localStorage.removeItem('hornymeterValue');
+      localStorage.removeItem("hornymeterValue");
     } catch (err: any) {
       setError(err.message || "Failed to join waitlist. Please try again.");
       setTimeout(() => setError(""), 5000);
@@ -456,7 +474,7 @@ export const Waitlist = () => {
               />
               <Input
                 type="text"
-                placeholder="favourite model"
+                placeholder="Enter favourite model..."
                 value={model}
                 onChange={(e) => setModel(e.target.value)}
               />

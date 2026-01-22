@@ -97,6 +97,11 @@ export const HornymeterLabel = styled.div`
   font-weight: 600;
   color: #ffffff;
   letter-spacing: 0.5px;
+
+  @media (max-width: 480px) {
+    font-size: 11px;
+    gap: 6px;
+  }
 `;
 
 export const SliderWrapper = styled.div`
@@ -116,6 +121,10 @@ export const HornymeterIcon = styled.span<{
   animation: ${({ isDragging }) => (isDragging ? pulse : "none")} 0.5s
     ease-in-out infinite;
   transition: all 300ms ease-in-out;
+
+  @media (max-width: 480px) {
+    font-size: 16px;
+  }
 `;
 
 export const HornymeterSlider = styled.input`
@@ -131,6 +140,7 @@ export const HornymeterSlider = styled.input`
   z-index: 3;
   cursor: pointer;
   margin: 0;
+  touch-action: none;
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -141,6 +151,7 @@ export const HornymeterSlider = styled.input`
     border-radius: 50%;
     cursor: grab;
     border: none;
+    -webkit-tap-highlight-color: transparent;
   }
 
   &:active::-webkit-slider-thumb {
@@ -206,9 +217,11 @@ export const HornymeterFill = styled.div<{
   background-size: 200% 100%;
   box-shadow: ${({ value, isDragging }) =>
     getHornynessShadow(value, isDragging)};
-  transition: width 150ms ease-out, box-shadow 300ms ease-in-out;
+  transition: ${({ isDragging }) =>
+    isDragging ? 'none' : 'width 150ms ease-out, box-shadow 300ms ease-in-out'};
   border-radius: 9999px;
   animation: ${shimmer} 3s linear infinite;
+  will-change: width;
 
   &::after {
     content: "";
@@ -265,29 +278,20 @@ export const HornymeterThumb = styled.div<{
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: ${({ value, isDragging }) => getThumbShadow(value, isDragging)};
-  transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  transition: ${({ isDragging }) =>
+    isDragging ? 'none' : 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)'};
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
   animation: ${({ value }) => (value > 80 ? shake : "none")} 0.5s ease-in-out infinite;
+  will-change: left, transform;
 
   span {
     font-size: 14px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
     animation: ${({ value }) => (value > 80 ? pulse : "none")} 0.8s ease-in-out infinite;
-  }
-
-  &::before {
-    content: "";
-    position: absolute;
-    inset: -2px;
-    border-radius: 50%;
-    background: ${({ value }) => getThumbGradient(value)};
-    opacity: ${({ value }) => (value > 80 ? 0.5 : 0.3)};
-    filter: blur(${({ value }) => (value > 80 ? 12 : 8)}px);
-    transition: all 300ms ease-in-out;
   }
 `;
 
@@ -318,6 +322,11 @@ export const LevelBadge = styled.div<{ value: number }>`
   letter-spacing: 0.8px;
   box-shadow: 0 2px 8px ${({ value }) => getLevelBadgeTextColor(value)}40;
   transition: all 300ms ease-in-out;
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+    padding: 3px 8px;
+  }
 `;
 
 const getValueColor = (value: number): string => {
@@ -342,6 +351,10 @@ export const HornymeterValue = styled.div<{ value: number }>`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     filter: drop-shadow(0 2px 8px ${({ value }) => getValueColor(value)}60);
+
+    @media (max-width: 480px) {
+      font-size: 16px;
+    }
   }
 `;
 
@@ -351,6 +364,10 @@ export const HornymeterDescription = styled.span`
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);
   letter-spacing: 0.5px;
+
+  @media (max-width: 480px) {
+    font-size: 8px;
+  }
 `;
 
 export const EmojiParticle = styled.div<{ delay: number }>`
