@@ -1,41 +1,9 @@
 import styled, { keyframes } from "styled-components";
 
-const pulse = keyframes`
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
-`;
-
 const float = keyframes`
   0% { transform: translateY(0px) scale(1); opacity: 1; }
   100% { transform: translateY(-40px) scale(0.5); opacity: 0; }
 `;
-
-const shimmer = keyframes`
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-`;
-
-const glowPulse = keyframes`
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.05); }
-`;
-
-const shake = keyframes`
-  0%, 100% { transform: translateX(0); }
-  10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
-  20%, 40%, 60%, 80% { transform: translateX(2px); }
-`;
-
-const intensePulse = keyframes`
-  0%, 100% { transform: scale(1); filter: brightness(1); }
-  50% { transform: scale(1.05); filter: brightness(1.2); }
-`;
-
-const getGlowColor = (value: number): string => {
-  if (value <= 33) return "rgba(0, 230, 118, 0.4)";
-  if (value <= 66) return "rgba(255, 214, 0, 0.4)";
-  return "rgba(255, 68, 88, 0.5)";
-};
 
 export const HornymeterGlow = styled.div<{
   value: number;
@@ -43,20 +11,8 @@ export const HornymeterGlow = styled.div<{
 }>`
   position: absolute;
   inset: -20px;
-  background: radial-gradient(
-    circle at center,
-    ${({ value }) => getGlowColor(value)},
-    transparent 70%
-  );
-  opacity: ${({ isDragging, value }) =>
-    isDragging ? 0.8 : value > 80 ? 0.7 : 0.4};
-  filter: blur(${({ value }) => (value > 80 ? 40 : 30)}px);
   pointer-events: none;
-  animation: ${({ value }) => (value > 80 ? intensePulse : glowPulse)}
-    ${({ value }) => (value > 80 ? "1s" : "2s")} ease-in-out infinite;
-  transition:
-    opacity 300ms ease-in-out,
-    filter 300ms ease-in-out;
+  display: none;
 `;
 
 export const HornymeterContainer = styled.div`
@@ -70,7 +26,6 @@ export const HornymeterContainer = styled.div`
     rgba(37, 37, 51, 0.95) 0%,
     rgba(26, 26, 36, 0.95) 100%
   );
-  backdrop-filter: blur(10px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
   box-shadow:
@@ -129,10 +84,7 @@ export const HornymeterIcon = styled.span<{
   isDragging: boolean;
 }>`
   font-size: 20px;
-  filter: drop-shadow(0 2px 8px ${({ value }) => getGlowColor(value)});
-  animation: ${({ isDragging }) => (isDragging ? pulse : "none")} 0.5s
-    ease-in-out infinite;
-  transition: all 300ms ease-in-out;
+  transition: none;
 
   @media (max-width: 480px) {
     font-size: 16px;
@@ -223,15 +175,6 @@ const getHornynessGradient = (value: number): string => {
   return "linear-gradient(90deg, #FF4458 0%, #FF5266 50%, #FF6B7A 100%)";
 };
 
-const getHornynessShadow = (value: number, isDragging: boolean): string => {
-  const intensity = isDragging ? 0.6 : 0.4;
-  if (value <= 33)
-    return `0 0 20px rgba(0, 230, 118, ${intensity}), 0 4px 12px rgba(0, 230, 118, 0.3)`;
-  if (value <= 66)
-    return `0 0 20px rgba(255, 214, 0, ${intensity}), 0 4px 12px rgba(255, 214, 0, 0.3)`;
-  return `0 0 20px rgba(255, 68, 88, ${intensity}), 0 4px 12px rgba(255, 68, 88, 0.3)`;
-};
-
 export const HornymeterFill = styled.div<{
   value: number;
   isDragging: boolean;
@@ -242,13 +185,8 @@ export const HornymeterFill = styled.div<{
   height: 100%;
   width: ${({ value }) => value}%;
   background: ${({ value }) => getHornynessGradient(value)};
-  background-size: 200% 100%;
-  box-shadow: ${({ value, isDragging }) =>
-    getHornynessShadow(value, isDragging)};
-  transition: ${({ isDragging }) =>
-    isDragging ? "none" : "width 0ms, box-shadow 300ms ease-in-out"};
+  transition: none;
   border-radius: 9999px;
-  animation: ${shimmer} 3s linear infinite;
   will-change: width;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
@@ -277,20 +215,10 @@ const getThumbGradient = (value: number): string => {
   return "linear-gradient(135deg, #FF4458 0%, #FF5266 50%, #FF6B7A 100%)";
 };
 
-const getThumbShadow = (value: number, isDragging: boolean): string => {
-  if (value <= 33) {
-    return isDragging
-      ? "0 8px 24px rgba(0, 230, 118, 0.8)"
-      : "0 4px 12px rgba(0, 230, 118, 0.6)";
-  }
-  if (value <= 66) {
-    return isDragging
-      ? "0 8px 24px rgba(255, 214, 0, 0.8)"
-      : "0 4px 12px rgba(255, 214, 0, 0.6)";
-  }
-  return isDragging
-    ? "0 8px 24px rgba(255, 68, 88, 0.8)"
-    : "0 4px 12px rgba(255, 68, 88, 0.6)";
+const getThumbBorder = (value: number): string => {
+  if (value <= 33) return "#00E676";
+  if (value <= 66) return "#FFD600";
+  return "#FF4458";
 };
 
 export const HornymeterThumb = styled.div<{
@@ -298,37 +226,26 @@ export const HornymeterThumb = styled.div<{
   isDragging: boolean;
 }>`
   position: absolute;
-  left: calc(${({ value }) => value}% - 0px);
+  left: ${({ value }) => value}%;
   top: 50%;
-  transform: translate(-50%, -50%)
-    ${({ isDragging }) => (isDragging ? "scale(1.2)" : "scale(1)")};
+  transform: translate(-50%, -50%);
   width: 26px;
   height: 26px;
   background: ${({ value }) => getThumbGradient(value)};
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: ${({ value, isDragging }) => getThumbShadow(value, isDragging)};
-  transition: ${({ isDragging }) =>
-    isDragging ? "none" : "left 0ms, transform 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1)"};
+  border: 3px solid ${({ value }) => getThumbBorder(value)};
+  transition: none;
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  animation: ${({ value }) => (value > 80 ? shake : "none")} 0.5s ease-in-out
-    infinite;
   will-change: left;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(-50%, -50%, 0)
-    ${({ isDragging }) => (isDragging ? "scale(1.2)" : "scale(1)")};
 
   span {
     font-size: 14px;
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-    animation: ${({ value }) => (value > 80 ? pulse : "none")} 0.8s ease-in-out
-      infinite;
     pointer-events: none;
     -webkit-user-select: none;
     user-select: none;
