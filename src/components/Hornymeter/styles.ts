@@ -52,8 +52,11 @@ export const HornymeterGlow = styled.div<{
     isDragging ? 0.8 : value > 80 ? 0.7 : 0.4};
   filter: blur(${({ value }) => (value > 80 ? 40 : 30)}px);
   pointer-events: none;
-  animation: ${({ value }) => (value > 80 ? intensePulse : glowPulse)} ${({ value }) => (value > 80 ? "1s" : "2s")} ease-in-out infinite;
-  transition: opacity 300ms ease-in-out, filter 300ms ease-in-out;
+  animation: ${({ value }) => (value > 80 ? intensePulse : glowPulse)}
+    ${({ value }) => (value > 80 ? "1s" : "2s")} ease-in-out infinite;
+  transition:
+    opacity 300ms ease-in-out,
+    filter 300ms ease-in-out;
 `;
 
 export const HornymeterContainer = styled.div`
@@ -70,7 +73,8 @@ export const HornymeterContainer = styled.div`
   backdrop-filter: blur(10px);
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.05);
   min-width: 200px;
   overflow: hidden;
@@ -92,7 +96,12 @@ export const HornymeterLabel = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-size: 13px;
   font-weight: 600;
   color: #ffffff;
@@ -218,7 +227,7 @@ export const HornymeterFill = styled.div<{
   box-shadow: ${({ value, isDragging }) =>
     getHornynessShadow(value, isDragging)};
   transition: ${({ isDragging }) =>
-    isDragging ? 'none' : 'width 150ms ease-out, box-shadow 300ms ease-in-out'};
+    isDragging ? "none" : "width 150ms ease-out, box-shadow 300ms ease-in-out"};
   border-radius: 9999px;
   animation: ${shimmer} 3s linear infinite;
   will-change: width;
@@ -279,19 +288,21 @@ export const HornymeterThumb = styled.div<{
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: ${({ value, isDragging }) => getThumbShadow(value, isDragging)};
   transition: ${({ isDragging }) =>
-    isDragging ? 'none' : 'all 250ms cubic-bezier(0.4, 0, 0.2, 1)'};
+    isDragging ? "none" : "all 250ms cubic-bezier(0.4, 0, 0.2, 1)"};
   pointer-events: none;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 2;
-  animation: ${({ value }) => (value > 80 ? shake : "none")} 0.5s ease-in-out infinite;
+  animation: ${({ value }) => (value > 80 ? shake : "none")} 0.5s ease-in-out
+    infinite;
   will-change: left, transform;
 
   span {
     font-size: 14px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
-    animation: ${({ value }) => (value > 80 ? pulse : "none")} 0.8s ease-in-out infinite;
+    animation: ${({ value }) => (value > 80 ? pulse : "none")} 0.8s ease-in-out
+      infinite;
   }
 `;
 
@@ -314,7 +325,12 @@ export const LevelBadge = styled.div<{ value: number }>`
   background: ${({ value }) => getLevelBadgeColor(value)};
   border: 1px solid ${({ value }) => getLevelBadgeTextColor(value)}33;
   border-radius: 9999px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-size: 10px;
   font-weight: 700;
   color: ${({ value }) => getLevelBadgeTextColor(value)};
@@ -343,7 +359,12 @@ export const HornymeterValue = styled.div<{ value: number }>`
   margin-top: 2px;
 
   span {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "Segoe UI",
+      sans-serif;
     font-size: 18px;
     font-weight: 700;
     background: ${({ value }) => getHornynessGradient(value)};
@@ -359,7 +380,12 @@ export const HornymeterValue = styled.div<{ value: number }>`
 `;
 
 export const HornymeterDescription = styled.span`
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   font-size: 10px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.5);

@@ -5,12 +5,7 @@ import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "../config/firebase";
 import { Hornymeter } from "./Hornymeter";
 import { TopModelsChart } from "./TopModelsChart";
-import {
-  getHornymeterMessage,
-  getHorninessEmoji,
-  getCommunityUnlockMessage,
-  hasUnlockedCommunity
-} from "../utils/hornymeterMessages";
+import { getHornymeterMessage } from "../utils/hornymeterMessages";
 
 const HeroSection = styled.section`
   position: relative;
