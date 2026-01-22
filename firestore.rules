@@ -5,14 +5,22 @@ service cloud.firestore {
     match /xpoz-landing/{document} {
       // Allow anyone to create new waitlist entries
       allow create: if request.resource.data.keys().hasAll(['timestamp'])
-                    && (request.resource.data.email is string || request.resource.data.whatsapp is string)
-                    && request.resource.data.size() <= 3; // Only email, whatsapp, and timestamp fields
+                    && request.resource.data.size() <= 10; // Allow multiple fields
 
       // No public read access - only you can view in Firebase Console
       allow read: if false;
 
       // No updates or deletes from public
       allow update, delete: if false;
+    }
+
+    // cached-data collection - allow public reads, only Cloud Functions can write
+    match /cached-data/{document} {
+      // Allow anyone to read cached data (like top models)
+      allow read: if true;
+
+      // No public writes - only Cloud Functions with Admin SDK can write
+      allow write: if false;
     }
   }
 }
