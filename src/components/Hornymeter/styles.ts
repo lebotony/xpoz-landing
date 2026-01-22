@@ -119,6 +119,9 @@ export const SliderWrapper = styled.div`
   height: 32px;
   display: flex;
   align-items: center;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
 `;
 
 export const HornymeterIcon = styled.span<{
@@ -149,7 +152,10 @@ export const HornymeterSlider = styled.input`
   z-index: 3;
   cursor: pointer;
   margin: 0;
-  touch-action: none;
+  padding: 0;
+  touch-action: pan-x;
+  -webkit-user-select: none;
+  user-select: none;
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -161,6 +167,7 @@ export const HornymeterSlider = styled.input`
     cursor: grab;
     border: none;
     -webkit-tap-highlight-color: transparent;
+    pointer-events: auto;
   }
 
   &:active::-webkit-slider-thumb {
@@ -178,6 +185,18 @@ export const HornymeterSlider = styled.input`
 
   &:active::-moz-range-thumb {
     cursor: grabbing;
+  }
+
+  &::-webkit-slider-runnable-track {
+    -webkit-appearance: none;
+    appearance: none;
+    background: transparent;
+    border: none;
+  }
+
+  &::-moz-range-track {
+    background: transparent;
+    border: none;
   }
 `;
 
@@ -227,10 +246,12 @@ export const HornymeterFill = styled.div<{
   box-shadow: ${({ value, isDragging }) =>
     getHornynessShadow(value, isDragging)};
   transition: ${({ isDragging }) =>
-    isDragging ? "none" : "width 150ms ease-out, box-shadow 300ms ease-in-out"};
+    isDragging ? "none" : "width 0ms, box-shadow 300ms ease-in-out"};
   border-radius: 9999px;
   animation: ${shimmer} 3s linear infinite;
   will-change: width;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 
   &::after {
     content: "";
@@ -259,16 +280,16 @@ const getThumbGradient = (value: number): string => {
 const getThumbShadow = (value: number, isDragging: boolean): string => {
   if (value <= 33) {
     return isDragging
-      ? "0 8px 24px rgba(0, 230, 118, 0.8), 0 0 0 4px rgba(0, 230, 118, 0.2)"
+      ? "0 8px 24px rgba(0, 230, 118, 0.8)"
       : "0 4px 12px rgba(0, 230, 118, 0.6)";
   }
   if (value <= 66) {
     return isDragging
-      ? "0 8px 24px rgba(255, 214, 0, 0.8), 0 0 0 4px rgba(255, 214, 0, 0.2)"
+      ? "0 8px 24px rgba(255, 214, 0, 0.8)"
       : "0 4px 12px rgba(255, 214, 0, 0.6)";
   }
   return isDragging
-    ? "0 8px 24px rgba(255, 68, 88, 0.8), 0 0 0 4px rgba(255, 68, 88, 0.2)"
+    ? "0 8px 24px rgba(255, 68, 88, 0.8)"
     : "0 4px 12px rgba(255, 68, 88, 0.6)";
 };
 
@@ -277,7 +298,7 @@ export const HornymeterThumb = styled.div<{
   isDragging: boolean;
 }>`
   position: absolute;
-  left: ${({ value }) => value}%;
+  left: calc(${({ value }) => value}% - 0px);
   top: 50%;
   transform: translate(-50%, -50%)
     ${({ isDragging }) => (isDragging ? "scale(1.2)" : "scale(1)")};
@@ -288,7 +309,7 @@ export const HornymeterThumb = styled.div<{
   border: 2px solid rgba(255, 255, 255, 0.2);
   box-shadow: ${({ value, isDragging }) => getThumbShadow(value, isDragging)};
   transition: ${({ isDragging }) =>
-    isDragging ? "none" : "all 250ms cubic-bezier(0.4, 0, 0.2, 1)"};
+    isDragging ? "none" : "left 0ms, transform 250ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1)"};
   pointer-events: none;
   display: flex;
   align-items: center;
@@ -296,13 +317,21 @@ export const HornymeterThumb = styled.div<{
   z-index: 2;
   animation: ${({ value }) => (value > 80 ? shake : "none")} 0.5s ease-in-out
     infinite;
-  will-change: left, transform;
+  will-change: left;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(-50%, -50%, 0)
+    ${({ isDragging }) => (isDragging ? "scale(1.2)" : "scale(1)")};
 
   span {
     font-size: 14px;
     filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.3));
     animation: ${({ value }) => (value > 80 ? pulse : "none")} 0.8s ease-in-out
       infinite;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
   }
 `;
 
