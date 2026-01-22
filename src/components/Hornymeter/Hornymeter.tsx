@@ -43,10 +43,7 @@ export const Hornymeter = ({ value, onChange }: HornymeterProps) => {
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = Number(e.target.value);
-    // Use requestAnimationFrame for smoother updates
-    requestAnimationFrame(() => {
-      onChange(newValue);
-    });
+    onChange(newValue);
   };
 
   return (
@@ -69,7 +66,6 @@ export const Hornymeter = ({ value, onChange }: HornymeterProps) => {
           max="100"
           value={value}
           onChange={handleSliderChange}
-          onInput={handleSliderChange}
           onMouseDown={() => setIsDragging(true)}
           onMouseUp={() => setIsDragging(false)}
           onMouseLeave={() => setIsDragging(false)}

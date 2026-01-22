@@ -108,6 +108,8 @@ export const HornymeterSlider = styled.input`
   touch-action: pan-x;
   -webkit-user-select: none;
   user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -120,6 +122,8 @@ export const HornymeterSlider = styled.input`
     border: none;
     -webkit-tap-highlight-color: transparent;
     pointer-events: auto;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
   }
 
   &:active::-webkit-slider-thumb {
@@ -190,6 +194,8 @@ export const HornymeterFill = styled.div<{
   will-change: width;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  transform: translateZ(0);
+  -webkit-transform: translateZ(0);
 
   &::after {
     content: "";
@@ -228,7 +234,7 @@ export const HornymeterThumb = styled.div<{
   position: absolute;
   left: ${({ value }) => value}%;
   top: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   width: 26px;
   height: 26px;
   background: ${({ value }) => getThumbGradient(value)};
@@ -243,6 +249,7 @@ export const HornymeterThumb = styled.div<{
   will-change: left;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  -webkit-transform: translate3d(-50%, -50%, 0);
 
   span {
     font-size: 14px;
