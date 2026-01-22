@@ -9,12 +9,10 @@
 import { updateTopModelsCache } from "../utils/topModels";
 
 export const initializeCache = async () => {
-  console.log("Initializing top models cache...");
   try {
     await updateTopModelsCache();
-    console.log("✅ Cache initialized successfully!");
   } catch (error) {
-    console.error("❌ Error initializing cache:", error);
+    // Error initializing cache
   }
 };
 

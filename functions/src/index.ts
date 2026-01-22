@@ -18,8 +18,6 @@ export const updateTopModelsCache = functions.firestore
   .document("xpoz-landing/{docId}")
   .onWrite(async (change, context) => {
     try {
-      console.log("Triggered updateTopModelsCache for document:", context.params.docId);
-
       // Get all documents from xpoz-landing collection
       const snapshot = await admin.firestore()
         .collection("xpoz-landing")
@@ -43,8 +41,6 @@ export const updateTopModelsCache = functions.firestore
         .sort((a, b) => b.count - a.count)
         .slice(0, 3); // Get top 3
 
-      console.log("Top 3 models calculated:", sortedModels);
-
       // Update the cached document
       await admin.firestore()
         .collection("cached-data")
@@ -55,14 +51,11 @@ export const updateTopModelsCache = functions.firestore
           totalSubmissions: snapshot.size,
         }, {merge: true});
 
-      console.log("Top models cache updated successfully");
-
       return {
         success: true,
         topModels: sortedModels,
       };
     } catch (error) {
-      console.error("Error updating top models cache:", error);
       throw new functions.https.HttpsError(
         "internal",
         "Failed to update top models cache"
@@ -76,8 +69,6 @@ export const updateTopModelsCache = functions.firestore
  */
 export const refreshTopModelsCache = functions.https.onCall(async (data, context) => {
   try {
-    console.log("Manual refresh of top models cache triggered");
-
     // Get all documents from xpoz-landing collection
     const snapshot = await admin.firestore()
       .collection("xpoz-landing")
@@ -101,8 +92,6 @@ export const refreshTopModelsCache = functions.https.onCall(async (data, context
       .sort((a, b) => b.count - a.count)
       .slice(0, 3); // Get top 3
 
-    console.log("Top 3 models calculated:", sortedModels);
-
     // Update the cached document
     await admin.firestore()
       .collection("cached-data")
@@ -113,15 +102,12 @@ export const refreshTopModelsCache = functions.https.onCall(async (data, context
         totalSubmissions: snapshot.size,
       }, {merge: true});
 
-    console.log("Top models cache refreshed successfully");
-
     return {
       success: true,
       topModels: sortedModels,
       totalSubmissions: snapshot.size,
     };
   } catch (error) {
-    console.error("Error refreshing top models cache:", error);
     throw new functions.https.HttpsError(
       "internal",
       "Failed to refresh top models cache"

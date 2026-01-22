@@ -103,7 +103,6 @@ export const TopModelsChart = () => {
   useEffect(() => {
     if (USE_CACHE) {
       // Production mode: Read from cache (requires Cloud Functions deployed)
-      console.log("Setting up real-time listener for top models cache...");
       const cacheDocRef = doc(db, "cached-data", "top-models");
 
       const unsubscribe = onSnapshot(
@@ -112,27 +111,13 @@ export const TopModelsChart = () => {
           if (docSnapshot.exists()) {
             const data = docSnapshot.data();
             const models = data.models || [];
-            console.log("Top models updated from cache:", models);
-
-            // Safely handle lastUpdated timestamp
-            if (data.lastUpdated) {
-              try {
-                console.log("Last updated:", data.lastUpdated.toDate?.() || data.lastUpdated);
-              } catch (e) {
-                console.log("Last updated: (timestamp parsing error)");
-              }
-            }
-
-            console.log("Total submissions:", data.totalSubmissions);
             setTopModels(models);
           } else {
-            console.log("No cached top models found - Cloud Function will create it on first submission");
             setTopModels([]);
           }
           setLoading(false);
         },
         (error) => {
-          console.error("Error listening to top models cache:", error);
           setTopModels([]);
           setLoading(false);
         }
@@ -141,7 +126,6 @@ export const TopModelsChart = () => {
       return () => unsubscribe();
     } else {
       // Development mode: Read directly from collection
-      console.log("Setting up real-time listener for xpoz-landing collection (direct mode)...");
       const collectionRef = collection(db, "xpoz-landing");
       const q = query(collectionRef);
 
@@ -166,12 +150,10 @@ export const TopModelsChart = () => {
             .sort((a, b) => b.count - a.count)
             .slice(0, 3); // Get top 3
 
-          console.log("Top models calculated in real-time:", sortedModels);
           setTopModels(sortedModels);
           setLoading(false);
         },
         (error) => {
-          console.error("Error listening to xpoz-landing collection:", error);
           setTopModels([]);
           setLoading(false);
         }
